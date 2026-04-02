@@ -20,6 +20,9 @@ app.get("/health", (req, res) => {
   return res.send("Finance Dashboard API - Modular Structure");
 });
 
+// Suppress favicon.ico errors
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 
 // Modular Routes
 app.use("/api/v1", appRouter);
