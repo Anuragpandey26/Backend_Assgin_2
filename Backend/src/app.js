@@ -21,7 +21,7 @@ app.use("/api/v1", appRouter);
 // Catch-all for non-existing routes (404)
 app.use(nonExistingRoutesErrorHandler);
 
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   return res.send("Finance Dashboard API - Modular Structure");
 });
 
