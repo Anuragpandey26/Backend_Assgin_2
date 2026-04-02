@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+enum Role {
+  ADMIN
+  ANALYST
+  VIEWER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model User {
+  id              String           @id @default(uuid())
+  name            String
+  email           String           @unique
+  password        String
+  role            Role             @default(VIEWER)
+  status          Status           @default(ACTIVE)
+  financialRecords FinancialRecord[]
+  budgets         Budget[]
+  refreshTokens   RefreshToken[]
+  auditLogs       AuditLog[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model FinancialRecord {
+  id            String          @id @default(uuid())
+  amount        Float
+  currency      String          @default("USD")
+  type          TransactionType
+  category      String
+  paymentMethod String          @default("Cash")
+  date          DateTime        @default(now())
+  notes         String?
+  isDeleted     Boolean         @default(false)
+  userId        String
+  user          User            @relation(fields: [userId], references: [id])
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([userId, date, category])
+}
+
+model Budget {
+  id          String   @id @default(uuid())
+  limit       Float
+  category    String
+  period      String   @default("MONTHLY")
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, category, period])
+}
+
+model BudgetAlert {
+  id          String   @id @default(uuid())
+  budgetId    String
+  message     String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  tokenHash   String   @unique
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model BlacklistedToken {
+  id        String   @id @default(uuid())
+  jti       String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String   // e.g., "LOGIN", "SIGNUP", "CREATE_RECORD", "UPDATE_RECORD"
+  entityId  String?  // The ID of the affected resource (if any)
+  metadata  Json?    // Any additional context (IP address, Browser, changes)
+  createdAt DateTime @default(now())
+}
