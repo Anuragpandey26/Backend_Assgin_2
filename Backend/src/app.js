@@ -15,15 +15,18 @@ app.use(cors());
 app.use(express.json());
 app.use(rateLimitMiddleware);
 
+// Health Check and Utility Routes
+app.get("/health", (req, res) => {
+  return res.send("Finance Dashboard API - Modular Structure");
+});
+
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 // Modular Routes
 app.use("/api/v1", appRouter);
 
 // Catch-all for non-existing routes (404)
 app.use(nonExistingRoutesErrorHandler);
-
-app.get("/health", (req, res) => {
-  return res.send("Finance Dashboard API - Modular Structure");
-});
 
 // Global Error Handlers
 app.use(jwtErrorHandler);
