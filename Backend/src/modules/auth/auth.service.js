@@ -17,7 +17,7 @@ import { toUserResponse } from "../../dto/user.dto.js";
 import { createLog as auditLog } from "../audit/audit.service.js";
 
 export const signup = async (userData) => {
-  const { name, email, password } = userData;
+  const { name, email, password, role = "VIEWER" } = userData;
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
@@ -33,7 +33,7 @@ export const signup = async (userData) => {
       name,
       email,
       password: hashedPassword,
-      role: "ADMIN",
+      role,
     },
   });
 
