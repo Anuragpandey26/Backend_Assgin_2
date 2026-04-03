@@ -1,6 +1,6 @@
 # Finance Dashboard Backend
 
-An enterprise-grade, modular, and secure finance dashboard backend built with Node.js, Express, and Prisma. This project features a robust Role-Based Access Control (RBAC) system, real-time audit logging, automated data seeding, and comprehensive unit/integration testing.
+An enterprise-grade, modular, and secure finance dashboard backend built with Node.js, Express, and Prisma. This project features a robust Role-Based Access Control (RBAC) system, real-time audit logging, and automated data seeding.
 
 ## 1. Description
 The Finance Dashboard Backend is designed to manage personal or organizational finances. It provides APIs for tracking income/expenses, managing budgets, generating financial reports (PDF/CSV), and visualizing data through dashboard summaries.
@@ -34,7 +34,6 @@ The application follows a **Modular Layered Architecture** to ensure high mainta
 - **Validation**: Zod
 - **Security**: jsonwebtoken, bcryptjs, helmet, cors, express-rate-limit
 - **Utilities**: date-fns, pdfkit, json2csv, multer (file uploads)
-- **Testing**: Vitest, Supertest
 
 ## 4. Folder Structure
 ```text
@@ -54,7 +53,6 @@ The application follows a **Modular Layered Architecture** to ensure high mainta
     /audit          # System-wide action logging
     /intelligence   # Financial forecasting and AI-ready logic
   /utils            # Shared helper functions (JWT, PDF, Forecast, etc.)
-  /tests            # Comprehensive unit and integration tests
   app.js            # Express application configuration
   server.js         # Server entry point
 ```
@@ -93,7 +91,7 @@ REFRESH_TOKEN_EXPIRY="30d"
 ## 6. API Documentation
 
 ### Authentication (`/api/v1/auth`)
-- `POST /signup` - Register a new user
+- `POST /signup` - Register a new user (Supports optional `role`: ADMIN, ANALYST, VIEWER. Defaults to `VIEWER`)
 - `POST /login` - Login and get access/refresh tokens
 - `POST /refresh` - Rotate refresh token to get a new access token
 - `POST /logout` - Invalidate current session and blacklist tokens
